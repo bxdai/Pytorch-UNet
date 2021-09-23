@@ -24,10 +24,11 @@ def evaluate(net, dataloader, device):
 
             # convert to one-hot format
             if net.n_classes == 1:
-                mask_pred = (F.sigmoid(mask_pred) > 0.5).float()
+                mask_pred = (F.sigmoid(mask_pred) > 0.5).float()#tensor元素大于0.5的为True小于0.5的为False 转为float类型就是1.0，0.0
                 # compute the Dice score
                 dice_score += dice_coeff(mask_pred, mask_true, reduce_batch_first=False)
             else:
+                #argmax dim = 1表示按着行计算
                 mask_pred = F.one_hot(mask_pred.argmax(dim=1), net.n_classes).permute(0, 3, 1, 2).float()
                 # compute the Dice score, ignoring background
                 dice_score += multiclass_dice_coeff(mask_pred[:, 1:, ...], mask_true[:, 1:, ...], reduce_batch_first=False)
