@@ -66,9 +66,10 @@ def train_net(net,
 
     # 4. Set up the optimizer, the loss, the learning rate scheduler and the loss scaling for AMP
     optimizer = optim.RMSprop(net.parameters(), lr=learning_rate, weight_decay=1e-8, momentum=0.9)
+    # mode = 'max' min’模式检测metric是否不再减小，'max’模式检测metric是否不再增大；
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=2)  # goal: maximize Dice score
     grad_scaler = torch.cuda.amp.GradScaler(enabled=amp)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss()#交叉熵损失
     global_step = 0
 
     # 5. Begin training
@@ -108,6 +109,7 @@ def train_net(net,
                     'step': global_step,
                     'epoch': epoch
                 })
+                # 在精度末尾添加一个dict的 loss信息
                 pbar.set_postfix(**{'loss (batch)': loss.item()})
 
                 # Evaluation round
@@ -115,6 +117,7 @@ def train_net(net,
                     histograms = {}
                     for tag, value in net.named_parameters():
                         tag = tag.replace('/', '.')
+                        #生成直方图
                         histograms['Weights/' + tag] = wandb.Histogram(value.data.cpu())
                         histograms['Gradients/' + tag] = wandb.Histogram(value.grad.data.cpu())
 
