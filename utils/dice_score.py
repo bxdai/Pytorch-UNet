@@ -1,7 +1,9 @@
 import torch
 from torch import Tensor
 
-
+#https://zhuanlan.zhihu.com/p/349046748
+#https://blog.csdn.net/liangjiu2009/article/details/107352164
+#周志华机器学习中，混淆矩阵有dict loss 相关公式和概念
 def dice_coeff(input: Tensor, target: Tensor, reduce_batch_first: bool = False, epsilon=1e-6):
     # Average of Dice coefficient for all batches, or for a single mask
     assert input.size() == target.size()

@@ -30,7 +30,7 @@ def evaluate(net, dataloader, device):
             else:
                 #argmax dim = 1表示按着行计算
                 mask_pred = F.one_hot(mask_pred.argmax(dim=1), net.n_classes).permute(0, 3, 1, 2).float()
-                # compute the Dice score, ignoring background
+                # compute the Dice score, ignoring background,channel 0 is background
                 dice_score += multiclass_dice_coeff(mask_pred[:, 1:, ...], mask_true[:, 1:, ...], reduce_batch_first=False)
 
            
